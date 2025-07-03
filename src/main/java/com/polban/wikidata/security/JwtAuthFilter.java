@@ -35,7 +35,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 new java.util.HashMap<String, Object>() {
                     {
                         put("message", message);
-                        put("statusCode", statusCode);
                     }
                 });
         response.getWriter().write(json);
@@ -45,20 +44,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain)
             throws ServletException, IOException {
-        String path = request.getRequestURI();
+        String requestURI = request.getRequestURI();
+        String header = request.getHeader("Authorization");
 
-        // Public endpoints
-        if (path.equals("/api/auth/login") || path.equals("/api/auth/register")
-                || path.startsWith("/api/public/")) {
+        if (requestURI.contains("/auth/refresh")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String header = request.getHeader("Authorization");
-
         if (header == null || !header.startsWith("Bearer ")) {
-            writeErrorResponse(HttpServletResponse.SC_UNAUTHORIZED, response,
-                    "Authorization header missing or invalid");
+            filterChain.doFilter(request, response);
             return;
         }
 

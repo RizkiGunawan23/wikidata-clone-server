@@ -8,4 +8,6 @@ public interface AuthenticationService {
     AuthenticationResponse signUp(UserSignUpRequest request);
 
     AuthenticationResponse signIn(UserSignInRequest request);
+
+    AuthenticationResponse refreshToken(String refreshToken);
 }

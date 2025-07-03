@@ -8,5 +8,4 @@ import lombok.Data;
 public class TokenData {
     private String accessToken;
     private String refreshToken;
-    private long expiresIn;
 }

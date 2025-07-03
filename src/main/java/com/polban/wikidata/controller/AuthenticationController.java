@@ -16,9 +16,10 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
-@RequestMapping("/api/auth/v1")
+@RequestMapping("/api/v1/auth")
 public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
@@ -35,13 +36,26 @@ public class AuthenticationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(apiSuccessResponse);
     }
 
-    @PostMapping("/singin")
+    @PostMapping("/signin")
     public ResponseEntity<ApiSuccessResponse<AuthenticationResponse>> signIn(
             @Valid @RequestBody UserSignInRequest request) {
         AuthenticationResponse response = authenticationService.signIn(request);
         ApiSuccessResponse<AuthenticationResponse> apiSuccessResponse = ApiSuccessResponse
                 .<AuthenticationResponse>builder()
                 .message("Sign in berhasil")
+                .data(response)
+                .build();
+        return ResponseEntity.ok().body(apiSuccessResponse);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiSuccessResponse<AuthenticationResponse>> refreshToken(
+            @RequestHeader("Authorization") String refreshToken) {
+        String token = refreshToken.substring(7);
+        AuthenticationResponse response = authenticationService.refreshToken(token);
+        ApiSuccessResponse<AuthenticationResponse> apiSuccessResponse = ApiSuccessResponse
+                .<AuthenticationResponse>builder()
+                .message("Token berhasil diperbarui")
                 .data(response)
                 .build();
         return ResponseEntity.ok().body(apiSuccessResponse);

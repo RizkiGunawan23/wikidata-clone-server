@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -22,11 +23,30 @@ public class GlobalExceptionHandler {
                 logger.error("{}: {}", ex.getClass().getSimpleName(), ex.getMessage());
 
                 ApiErrorResponse error = ApiErrorResponse.builder()
-                                .statusCode(ex.getStatusCode())
                                 .message(ex.getMessage())
                                 .build();
 
                 return ResponseEntity.status(ex.getStatusCode()).body(error);
+        }
+
+        @ExceptionHandler(HttpMessageNotReadableException.class)
+        public ResponseEntity<ApiErrorResponse> handleHttpMessageNotReadableException(
+                        HttpMessageNotReadableException ex) {
+                logger.warn("Request body missing or malformed: {}", ex.getMessage());
+
+                String message = "Request body diperlukan atau format JSON tidak valid";
+
+                if (ex.getMessage().contains("Required request body is missing")) {
+                        message = "Request body diperlukan untuk endpoint ini";
+                } else if (ex.getMessage().contains("JSON parse error")) {
+                        message = "Format JSON tidak valid";
+                }
+
+                ApiErrorResponse error = ApiErrorResponse.builder()
+                                .message(message)
+                                .build();
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
 
         @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -50,7 +70,6 @@ public class GlobalExceptionHandler {
                 logger.error("Validation error: {}", errors);
 
                 ApiErrorResponse errorResponse = ApiErrorResponse.builder()
-                                .statusCode(HttpStatus.BAD_REQUEST)
                                 .message("Data yang dimasukkan tidak valid")
                                 .errors(errors)
                                 .build();
@@ -63,7 +82,6 @@ public class GlobalExceptionHandler {
                 logger.error("Internal server error: ", ex);
 
                 ApiErrorResponse error = ApiErrorResponse.builder()
-                                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR)
                                 .message("Terjadi kesalahan pada server")
                                 .build();
 

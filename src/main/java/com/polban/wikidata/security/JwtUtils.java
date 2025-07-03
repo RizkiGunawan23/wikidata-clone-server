@@ -27,7 +27,7 @@ public class JwtUtils {
     private int jwtExpirationMs;
 
     @Value("${app.jwtRefreshExpirationMs:2592000000}")
-    private int jwtRefreshExpirationMs;
+    private long jwtRefreshExpirationMs;
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
@@ -40,7 +40,6 @@ public class JwtUtils {
         return TokenData.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .expiresIn(jwtExpirationMs / 1000)
                 .build();
     }
 

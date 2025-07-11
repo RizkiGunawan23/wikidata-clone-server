@@ -1,4 +1,4 @@
-package com.polban.wikidata.service.impl;
+package com.polban.wikidata.service.user.authentication.impl;
 
 import java.util.UUID;
 
@@ -8,19 +8,19 @@ import org.springframework.stereotype.Service;
 
 import com.polban.wikidata.dto.request.user.authentication.UserSignInRequest;
 import com.polban.wikidata.dto.request.user.authentication.UserSignUpRequest;
-import com.polban.wikidata.dto.response.user.authentication.AuthenticationResponse;
-import com.polban.wikidata.dto.response.user.authentication.TokenData;
-import com.polban.wikidata.dto.response.user.authentication.UserData;
+import com.polban.wikidata.dto.response.authentication.AuthenticationResponse;
+import com.polban.wikidata.dto.response.authentication.TokenData;
+import com.polban.wikidata.dto.response.authentication.UserData;
 import com.polban.wikidata.exception.ConflictException;
 import com.polban.wikidata.exception.UnauthorizedException;
 import com.polban.wikidata.exception.BadRequestException;
 import com.polban.wikidata.model.User;
 import com.polban.wikidata.repository.UserRepository;
 import com.polban.wikidata.security.JwtUtils;
-import com.polban.wikidata.service.AuthenticationService;
+import com.polban.wikidata.service.user.authentication.UserAuthenticationService;
 
 @Service
-public class AuthenticationServiceImpl implements AuthenticationService {
+public class AuthenticationServiceImpl implements UserAuthenticationService {
         @Autowired
         private UserRepository userRepository;
 

@@ -1,4 +1,4 @@
-package com.polban.wikidata.dto.response.user.authentication;
+package com.polban.wikidata.dto.response.authentication;
 
 import lombok.Builder;
 import lombok.Data;

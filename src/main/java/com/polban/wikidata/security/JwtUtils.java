@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.polban.wikidata.dto.response.user.authentication.TokenData;
+import com.polban.wikidata.dto.response.authentication.TokenData;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

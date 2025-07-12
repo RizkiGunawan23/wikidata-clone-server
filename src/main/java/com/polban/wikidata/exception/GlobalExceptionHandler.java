@@ -6,9 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,6 +77,28 @@ public class GlobalExceptionHandler {
                                 .build();
 
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
+
+        @ExceptionHandler(NoHandlerFoundException.class)
+        public ResponseEntity<ApiErrorResponse> handleNoHandlerFoundException(NoHandlerFoundException ex) {
+                ApiErrorResponse response = ApiErrorResponse.builder()
+                                .message("Endpoint tidak ditemukan: " + ex.getRequestURL())
+                                .build();
+
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+        public ResponseEntity<ApiErrorResponse> handleMethodNotSupportedException(
+                        HttpRequestMethodNotSupportedException ex) {
+                String supportedMethods = String.join(", ", ex.getSupportedMethods());
+                ApiErrorResponse response = ApiErrorResponse.builder()
+                                .message("Method " + ex.getMethod()
+                                                + " tidak didukung untuk endpoint ini. Method yang didukung: "
+                                                + supportedMethods)
+                                .build();
+
+                return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
         }
 
         @ExceptionHandler(Exception.class)

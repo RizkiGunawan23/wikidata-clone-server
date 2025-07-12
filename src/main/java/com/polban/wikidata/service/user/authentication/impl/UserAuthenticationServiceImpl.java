@@ -20,7 +20,7 @@ import com.polban.wikidata.security.JwtUtils;
 import com.polban.wikidata.service.user.authentication.UserAuthenticationService;
 
 @Service
-public class AuthenticationServiceImpl implements UserAuthenticationService {
+public class UserAuthenticationServiceImpl implements UserAuthenticationService {
         @Autowired
         private UserRepository userRepository;
 

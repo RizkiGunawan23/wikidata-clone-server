@@ -21,95 +21,102 @@ import com.polban.wikidata.service.admin.authentication.AdminAuthenticationServi
 
 @Service
 public class AdminAuthenticationServiceImpl implements AdminAuthenticationService {
-    @Autowired
-    private UserRepository userRepository;
+        @Autowired
+        private UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+        @Autowired
+        private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private JwtUtils jwtUtils;
+        @Autowired
+        private JwtUtils jwtUtils;
 
-    @Override
-    public AuthenticationResponse signUp(AdminSignUpRequest request) {
-        if (userRepository.existsByUsername(request.getUsername()))
-            throw new ConflictException("Username sudah digunakan");
+        @Override
+        public AuthenticationResponse signUp(AdminSignUpRequest request) {
+                if (userRepository.existsByUsername(request.getUsername()))
+                        throw new ConflictException("Username sudah digunakan");
 
-        if (request.getEmail() != null && !request.getEmail().trim().isEmpty()) {
-            if (userRepository.existsByEmail(request.getEmail()))
-                throw new ConflictException("Email sudah digunakan");
+                if (request.getEmail() != null && !request.getEmail().trim().isEmpty()) {
+                        if (userRepository.existsByEmail(request.getEmail()))
+                                throw new ConflictException("Email sudah digunakan");
+                }
+
+                User user = User.builder()
+                                .id(UUID.randomUUID().toString())
+                                .username(request.getUsername())
+                                .password(passwordEncoder.encode(request.getPassword()))
+                                .email(request.getEmail())
+                                .role(User.ROLE_USER)
+                                .build();
+
+                user = userRepository.save(user);
+
+                TokenData tokens = jwtUtils.generateTokens(user.getUsername(), user.getRole());
+
+                UserData userData = UserData.builder()
+                                .id(user.getId())
+                                .username(user.getUsername())
+                                .email(user.getEmail())
+                                .role(user.getRole())
+                                .build();
+
+                return AuthenticationResponse.builder()
+                                .user(userData)
+                                .tokens(tokens)
+                                .build();
         }
 
-        User user = User.builder()
-                .id(UUID.randomUUID().toString())
-                .username(request.getUsername())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .email(request.getEmail())
-                .role(User.ROLE_USER)
-                .build();
+        @Override
+        public AuthenticationResponse signIn(AdminSignInRequest request) {
+                User user = userRepository.findByUsername(request.getCredential())
+                                .orElse(null);
 
-        user = userRepository.save(user);
+                if (user == null)
+                        user = userRepository.findByEmail(request.getCredential())
+                                        .orElse(null);
 
-        TokenData tokens = jwtUtils.generateTokens(user.getUsername(), user.getRole());
+                if (user == null)
+                        throw new BadRequestException("Username/email atau password salah");
 
-        UserData userData = UserData.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .role(user.getRole())
-                .build();
+                if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
+                        throw new BadRequestException("Username/email atau password salah");
 
-        return AuthenticationResponse.builder()
-                .user(userData)
-                .tokens(tokens)
-                .build();
-    }
+                TokenData tokens = jwtUtils.generateTokens(user.getUsername(), user.getRole());
 
-    @Override
-    public AuthenticationResponse signIn(AdminSignInRequest request) {
-        User user = userRepository.findByUsername(request.getCredential())
-                .orElseThrow(() -> new BadRequestException("Username atau password salah"));
+                UserData userData = UserData.builder()
+                                .id(user.getId())
+                                .username(user.getUsername())
+                                .email(user.getEmail())
+                                .role(user.getRole())
+                                .build();
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
-            throw new BadRequestException("Username atau password salah");
+                return AuthenticationResponse.builder()
+                                .user(userData)
+                                .tokens(tokens)
+                                .build();
+        }
 
-        TokenData tokens = jwtUtils.generateTokens(user.getUsername(), user.getRole());
+        @Override
+        public AuthenticationResponse refreshToken(String refreshToken) {
+                if (!jwtUtils.validateRefreshToken(refreshToken))
+                        throw new UnauthorizedException("Refresh token tidak valid atau telah kedaluwarsa");
 
-        UserData userData = UserData.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .role(user.getRole())
-                .build();
+                String username = jwtUtils.getUsernameFromJwtToken(refreshToken);
 
-        return AuthenticationResponse.builder()
-                .user(userData)
-                .tokens(tokens)
-                .build();
-    }
+                User user = userRepository.findByUsername(username)
+                                .orElseThrow(() -> new UnauthorizedException("Pengguna tidak ditemukan"));
 
-    @Override
-    public AuthenticationResponse refreshToken(String refreshToken) {
-        if (!jwtUtils.validateRefreshToken(refreshToken))
-            throw new UnauthorizedException("Refresh token tidak valid atau telah kedaluwarsa");
+                TokenData tokens = jwtUtils.generateTokens(user.getUsername(), user.getRole());
 
-        String username = jwtUtils.getUsernameFromJwtToken(refreshToken);
+                UserData userData = UserData.builder()
+                                .id(user.getId())
+                                .username(user.getUsername())
+                                .email(user.getEmail())
+                                .role(user.getRole())
+                                .build();
 
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UnauthorizedException("Pengguna tidak ditemukan"));
-
-        TokenData tokens = jwtUtils.generateTokens(user.getUsername(), user.getRole());
-
-        UserData userData = UserData.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .role(user.getRole())
-                .build();
-
-        return AuthenticationResponse.builder()
-                .user(userData)
-                .tokens(tokens)
-                .build();
-    }
+                return AuthenticationResponse.builder()
+                                .user(userData)
+                                .tokens(tokens)
+                                .build();
+        }
 }

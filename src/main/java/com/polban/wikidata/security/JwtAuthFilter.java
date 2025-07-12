@@ -60,7 +60,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = header.substring(7);
         try {
             if (!jwtUtils.validateJwtToken(token)) {
-                writeErrorResponse(HttpServletResponse.SC_UNAUTHORIZED, response, "Invalid token");
+                writeErrorResponse(HttpServletResponse.SC_UNAUTHORIZED, response,
+                        "Token tidak valid atau telah kedaluwarsa");
                 return;
             }
 
@@ -69,7 +70,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             User user = userRepository.findByUsername(username).orElse(null);
             if (user == null) {
-                writeErrorResponse(HttpServletResponse.SC_UNAUTHORIZED, response, "User not found");
+                writeErrorResponse(HttpServletResponse.SC_UNAUTHORIZED, response, "Pengguna tidak ditemukan");
                 return;
             }
 
@@ -84,7 +85,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     userDetails, null, Collections.singleton(authority));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
-            writeErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response, "Internal server error");
+            writeErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response, "Terjadi kesalahan pada server");
             return;
         }
         filterChain.doFilter(request, response);

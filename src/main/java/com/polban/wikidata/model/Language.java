@@ -20,20 +20,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Language {
     @Id
-    @Property("code")
+    @Property("languageCode")
     private String code;
 
-    @Property("name")
+    @Property("languageName")
     private String name;
 
-    @Property("variant")
+    @Property("languageVariant")
     private String variant;
 
     @CreatedDate
-    @Property("createdAt")
+    @Property("languageCreatedAt")
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Property("updatedAt")
+    @Property("languageUpdatedAt")
     private LocalDateTime updatedAt;
 }

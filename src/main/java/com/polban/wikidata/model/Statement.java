@@ -21,36 +21,40 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Statement {
     @Id
+    @Property("statementId")
     private String id;
 
     @Property("rank")
     private String rank;
 
-    @Property("value")
+    @Property("statementValue")
     private String value;
 
-    @Property("valueType")
+    @Property("statementValueType")
     private String valueType;
 
-    @Relationship(type = "USES_PROPERTY", direction = Relationship.Direction.OUTGOING)
-    private Property property;
-
-    @Relationship(type = "HAS_QUALIFIER", direction = Relationship.Direction.OUTGOING)
-    private Set<Qualifier> qualifiers;
-
-    @Relationship(type = "HAS_REFERENCE", direction = Relationship.Direction.OUTGOING)
-    private Set<Reference> references;
-
     @CreatedDate
-    @Property("createdAt")
+    @Property("statementCreatedAt")
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Property("updatedAt")
+    @Property("statementUpdatedAt")
     private LocalDateTime updatedAt;
 
-    @Relationship(type = "CREATED_BY", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "STATEMENT_USES_PROPERTY", direction = Relationship.Direction.OUTGOING)
+    private Property property;
+
+    @Relationship(type = "STATEMENT_HAS_QUALIFIER", direction = Relationship.Direction.OUTGOING)
+    private Set<Qualifier> qualifiers;
+
+    @Relationship(type = "STATEMENT_HAS_REFERENCE", direction = Relationship.Direction.OUTGOING)
+    private Set<Reference> references;
+
+    @Relationship(type = "STATEMENT_CREATED_BY", direction = Relationship.Direction.OUTGOING)
     private User createdBy;
+
+    @Relationship(type = "STATEMENT_MODIFIED_BY", direction = Relationship.Direction.OUTGOING)
+    private User modifiedBy;
 
     public static class Rank {
         public static final String PREFERRED = "preferred";

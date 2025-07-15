@@ -2,6 +2,7 @@ package com.polban.wikidata.model;
 
 import java.time.LocalDateTime;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Property;
@@ -19,20 +20,25 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Qualifier {
     @Id
+    @Property("qualifierId")
     private String id;
 
-    @Property("value")
+    @Property("qualifierValue")
     private String value;
 
-    @Property("valueType")
+    @Property("qualifierValueType")
     private String valueType;
 
-    @Relationship(type = "USES_PROPERTY", direction = Relationship.Direction.OUTGOING)
-    private Property property;
-
     @CreatedDate
-    @Property("createdAt")
+    @Property("qualifierCreatedAt")
     private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Property("qualifierUpdatedAt")
+    private LocalDateTime updatedAt;
+
+    @Relationship(type = "QUALIFIER_USES_PROPERTY", direction = Relationship.Direction.OUTGOING)
+    private Property property;
 
     public static class ValueType {
         public static final String ITEM = "item";

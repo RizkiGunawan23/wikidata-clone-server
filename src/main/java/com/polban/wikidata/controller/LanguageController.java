@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.polban.wikidata.dto.response.ApiSuccessResponse;
+import com.polban.wikidata.dto.response.common.ApiSuccessResponse;
 import com.polban.wikidata.model.Language;
 import com.polban.wikidata.service.LanguageService;
 

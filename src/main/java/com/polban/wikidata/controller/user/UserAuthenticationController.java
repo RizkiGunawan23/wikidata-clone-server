@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.polban.wikidata.dto.request.user.authentication.UserSignInRequest;
 import com.polban.wikidata.dto.request.user.authentication.UserSignUpRequest;
-import com.polban.wikidata.dto.response.ApiSuccessResponse;
 import com.polban.wikidata.dto.response.authentication.AuthenticationResponse;
+import com.polban.wikidata.dto.response.common.ApiSuccessResponse;
 import com.polban.wikidata.service.user.authentication.UserAuthenticationService;
 
 import jakarta.validation.Valid;

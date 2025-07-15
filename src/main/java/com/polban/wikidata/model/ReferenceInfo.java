@@ -1,5 +1,9 @@
 package com.polban.wikidata.model;
 
+import java.time.LocalDateTime;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Property;
@@ -15,21 +19,30 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReferenceProperty {
+public class ReferenceInfo {
     @Id
+    @Property("referenceInfoId")
     private String id;
 
-    @Property("value")
+    @Property("referenceInfoValue")
     private String value;
 
-    @Property("valueType")
+    @Property("referenceInfoValueType")
     private String valueType;
-
-    @Relationship(type = "USES_PROPERTY", direction = Relationship.Direction.OUTGOING)
-    private Property property;
 
     @Property("order")
     private Integer order;
+
+    @CreatedDate
+    @Property("referenceInfoCreatedAt")
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Property("referenceInfoUpdatedAt")
+    private LocalDateTime updatedAt;
+
+    @Relationship(type = "REFERENCE_INFO_USES_PROPERTY", direction = Relationship.Direction.OUTGOING)
+    private Property property;
 
     public static class ValueType {
         public static final String ITEM = "item";

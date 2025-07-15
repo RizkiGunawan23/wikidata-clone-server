@@ -1,7 +1,7 @@
 package com.polban.wikidata.model;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.neo4j.core.schema.Id;
@@ -14,24 +14,36 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Node("Reference")
+@Node("ItemInfo")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Reference {
+public class ItemInfo {
     @Id
-    @Property("referenceId")
+    @Property("itemInfoId")
     private String id;
 
+    @Property("itemInfoValue")
+    private String value;
+
+    @Property("itemInfoValueType")
+    private String valueType;
+
     @CreatedDate
-    @Property("referenceCreatedAt")
+    @Property("itemInfoCreatedAt")
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Property("referenceUpdatedAt")
+    @Property("itemInfoUpdatedAt")
     private LocalDateTime updatedAt;
 
-    @Relationship(type = "HAS_REFERENCE_INFO", direction = Relationship.Direction.OUTGOING)
-    private Set<ReferenceInfo> referenceInfos;
+    @Relationship(type = "ITEM_INFO_IN_LANGUAGE", direction = Relationship.Direction.OUTGOING)
+    private Language language;
+
+    public static class ValueType {
+        public static final String LABEL = "label";
+        public static final String DESCRIPTION = "description";
+        public static final String ALIAS = "alias";
+    }
 }

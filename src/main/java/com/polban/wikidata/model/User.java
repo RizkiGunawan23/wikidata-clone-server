@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class User {
     @Id
+    @Property("userId")
     private String id;
 
     @Property("username")
@@ -35,11 +36,11 @@ public class User {
     private String role;
 
     @CreatedDate
-    @Property("createdAt")
+    @Property("userCreatedAt")
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Property("updatedAt")
+    @Property("userUpdatedAt")
     private LocalDateTime updatedAt;
 
     public static final String ROLE_ADMIN = "ADMIN";

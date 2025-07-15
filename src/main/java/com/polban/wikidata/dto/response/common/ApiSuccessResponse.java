@@ -1,4 +1,4 @@
-package com.polban.wikidata.dto.response;
+package com.polban.wikidata.dto.response.common;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,15 +1,13 @@
 package com.polban.wikidata.model;
 
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.Set;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,47 +24,22 @@ public class Property {
     @org.springframework.data.neo4j.core.schema.Property("pId")
     private String pId;
 
-    @org.springframework.data.neo4j.core.schema.Property("labels")
-    private String labels;
+    @org.springframework.data.neo4j.core.schema.Property("dataType")
+    private String dataType;
 
-    @org.springframework.data.neo4j.core.schema.Property("descriptions")
-    private String descriptions;
-
-    @org.springframework.data.neo4j.core.schema.Property("aliases")
-    private String aliases;
-
-    @org.springframework.data.neo4j.core.schema.Property("datatype")
-    private String datatype;
-
-    @org.springframework.data.neo4j.core.schema.Property("status")
+    @org.springframework.data.neo4j.core.schema.Property("propertyStatus")
     private String status;
 
     @CreatedDate
-    @org.springframework.data.neo4j.core.schema.Property("createdAt")
+    @org.springframework.data.neo4j.core.schema.Property("propertyCreatedAt")
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @org.springframework.data.neo4j.core.schema.Property("updatedAt")
+    @org.springframework.data.neo4j.core.schema.Property("propertyUpdatedAt")
     private LocalDateTime updatedAt;
 
-    private static final ObjectMapper mapper = new ObjectMapper();
-
-    public Map<String, String> getLabels() {
-        try {
-            return labels == null ? null : mapper.readValue(labels, new TypeReference<Map<String, String>>() {
-            });
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public void setLabels(Map<String, String> labels) {
-        try {
-            this.labels = labels == null ? null : mapper.writeValueAsString(labels);
-        } catch (Exception e) {
-            this.labels = null;
-        }
-    }
+    @Relationship(type = "HAS_PROPERTY_INFO", direction = Relationship.Direction.OUTGOING)
+    private Set<PropertyInfo> propertyInfos;
 
     public static class Datatype {
         public static final String WIKIBASE_ITEM = "wikibase-item";

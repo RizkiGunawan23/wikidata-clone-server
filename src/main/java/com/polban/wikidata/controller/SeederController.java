@@ -3,8 +3,8 @@ package com.polban.wikidata.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.polban.wikidata.dto.response.ApiSuccessResponse;
-import com.polban.wikidata.dto.response.SeederResponse;
+import com.polban.wikidata.dto.response.common.ApiSuccessResponse;
+import com.polban.wikidata.dto.response.common.SeederResponse;
 import com.polban.wikidata.service.SeederService;
 
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,53 +1,49 @@
 package com.polban.wikidata.model;
 
 import java.time.LocalDateTime;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
-import org.springframework.data.neo4j.core.schema.Property;
 import org.springframework.data.neo4j.core.schema.Relationship;
+import org.springframework.data.neo4j.core.schema.Property;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Node("Sitelink")
+@Node("PropertyInfo")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Sitelink {
+public class PropertyInfo {
     @Id
-    @Property("sitelinkId")
+    @Property("propertyInfoId")
     private String id;
 
-    @Property("site")
-    private String site;
+    @Property("propertyInfoValue")
+    private String value;
 
-    @Property("title")
-    private String title;
-
-    @Property("url")
-    private String url;
-
-    @Property("badge")
-    private String badge;
+    @Property("propertyInfoValueType")
+    private String valueType;
 
     @CreatedDate
-    @Property("sitelinkCreatedAt")
+    @Property("propertyInfoCreatedAt")
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Property("sitelinkUpdatedAt")
+    @Property("propertyInfoUpdatedAt")
     private LocalDateTime updatedAt;
 
-    @Relationship(type = "SITELINK_IN_LANGUAGE", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "PROPERTY_INFO_IN_LANGUAGE", direction = Relationship.Direction.OUTGOING)
     private Language language;
 
-    public static class Badge {
-        public static final String FEATURED = "featured";
-        public static final String GOOD = "good";
+    public static class ValueType {
+        public static final String LABEL = "label";
+        public static final String DESCRIPTION = "description";
+        public static final String ALIAS = "alias";
     }
 }

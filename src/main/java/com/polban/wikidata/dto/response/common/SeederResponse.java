@@ -1,4 +1,4 @@
-package com.polban.wikidata.dto.response;
+package com.polban.wikidata.dto.response.common;
 
 import com.polban.wikidata.dto.response.authentication.AuthenticationResponse;
 
